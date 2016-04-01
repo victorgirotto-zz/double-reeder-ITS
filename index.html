@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Double Reeder</title>
+
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<link rel="stylesheet" type="text/css" href="css/jquery-ui.css">
+</head>
+<body>
+
+	<div id="overlay">
+		<div id="dialog" class="window">
+			<h2>Message</h2>
+			<p>This is a sample message</p>
+			<a href="#" class="button dismiss-window">Ok</a>
+		</div>
+
+		<div id="submit-value-window" class="window">
+			<h2>Please, enter the desired value:</h2>
+			<p>This is a sample message</p>
+			<input type="text" />
+			<a href="#" class="button dismiss-window" id="submit-value">Submit</a>
+		</div>
+
+		<div id="help-window" class="window">
+			<h2>Help</h2>
+			Guide by Martin Schuring (ASU): <a href="http://www.public.asu.edu/~schuring/main.html" target="_blank">http://www.public.asu.edu/~schuring/main.html</a>
+			<iframe src="help.html"></iframe>
+			<a href="#" class="button dismiss-window">Dismiss</a>
+		</div>
+
+		<div id="review-window" class="window">
+			<h2>Review</h2>
+
+			<img src="img/complete-reed.png"/>
+			<ul><!-- info from template --></ul>
+			<div style="clear:both"></div>
+			<a href="#" class="button" id="dismiss-results">Ok</a>
+		</div>
+
+		<div id="info-window" class="window">
+			<h2></h2>
+			<div>
+
+			</div>
+			<a href="#" class="button dismiss-window">Dismiss</a>
+		</div>
+
+		<div id="welcome" class="window">
+			<h2>Welcome to the Double Reeder ITS!</h2>
+
+			<p>
+				Welcome! Are you tired of having to buy reeds from someone else? Are you tired of having to wait, or e-mail someone when you need a reed the most? Did you have enough of being bored during rehearsals, while your fellow oboe players are entertained making or improving their reeds? 
+			</p>
+
+			<p>You came to the right place!</p>
+
+			<p>
+				This one-of-its-kind Intelligent Tutoring System (ITS) will help you with the basic knowledge you need to make your own reeds. Of course, you'll still need to practice manually, since a comptuer mouse can only go so far. But this will give you the basics on making and debugging your own reed!
+			</p>
+
+			<p>Choose a mode below:</p>
+
+			<ul>
+				<!-- <li><a href="#" id="test">Test mode</a></li> -->
+				<li><a href="#" id="free-roam">Explore mode</a></li>
+				<li><a href="#" id="time-pressure">Time pressure mode</a></li>
+				<li><a href="#" id="debug">Debugging Mode</a></li>
+			</ul>
+
+		</div>
+
+	</div>
+	<div id="container">
+		<div id="title">
+			<h1 class="depth" title="Double Reeder">Double Reeder</h1>
+		</div>
+		<div id="canvas">
+			<div id="timer"></div>
+			<div id="materials" class="menubox">
+				<h2>Materials</h2>
+				<ul class="menubox-icons"></ul>
+			</div>
+			<div id="actions" class="menubox">
+				<h2>Actions</h2>
+				<ul class="menubox-icons"></ul>
+			</div>
+			<div id="tools" class="menubox">
+				<h2>Tools</h2>
+				<ul class="menubox-icons"></ul>
+			</div>
+			<div id="workbench" class="droppable">
+				<!-- 
+					"ph_" stands for placeholder. Each of the divs below 
+					holds an image that is shown or not depending on 
+					the state of the reed
+				-->
+				<div id="ph_tube" class="placeholder droppable"><ul class="inactive"></ul></div>
+				<div id="ph_thread" class="placeholder droppable"><ul class="inactive"></ul></div>
+				<div id="ph_cane" class="placeholder droppable gouged"><ul class="inactive"></ul></div>
+				<div id="ph_scrape" class="placeholder"><ul class="inactive"></ul></div>
+				<div id="ph_cutBlock" class="placeholder"><ul class="inactive"></ul></div>
+				<div id="ph_plaque" class="placeholder"><ul class="inactive"></ul></div>
+				<div id="ph_mandrel" class="placeholder"><ul class="inactive"></ul></div>
+				<div id="ph_water" class="placeholder droppable"><ul class="inactive"></ul></div>
+				<div id="ph_easel" class="placeholder droppable"><ul class="inactive"></ul></div>
+
+			</div>
+
+			<div id="scrapeMode">
+				<div id="scrape-reed" class="tool-selected">
+					<div id="scrape-tip" class="scrape-area"></div>
+					<div id="scrape-heart" class="scrape-area"></div>
+					<div id="scrape-back" class="scrape-area"></div>
+				</div>
+
+				<div id="scrape-plaque-large"></div>
+				<div id="scrape-cutBlock-large"></div>
+
+				<div id="scrape-ruler-large"></div>
+
+				<div id="scrape-toolbar" class="scrape-widget">
+					<h2>Tools</h2>
+					<ul>
+					</ul>
+				</div>
+
+				<a href="#" id="scrape-close" class="scrape-widget">X</a>
+			</div>
+
+		</div>
+	</div>
+
+<audio id="audio-player"></audio>
+
+<script type="text/javascript" src="js/sound-manager.js"></script>
+<script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.10.4.min.js"></script>
+<script type="text/javascript" src="js/handlebars-v1.3.0.js"></script>
+<!-- Handlebar Templates -->
+<script type="text/x-handlebars-template" id="measurements-window">
+	<ul>
+		{{#each measurements}}
+		<li>
+			{{this.bottom}} &#8594; {{this.top}}: {{this.measure}}mm 
+			{{#if canChange}}
+				<a href="#" class="button">Adjust</a>
+			{{/if}}
+		</li>
+		{{/each}}
+	</ul>
+</script>
+<script type="text/x-handlebars-template" id="review-window-template">
+	{{#each data}}
+	<li>
+		{{this.name}}: 
+		{{#if this.isNumber}}
+			<div class="results-bar {{#if this.isProgressive}}progressive{{/if}}"><span class="results-dial" style="left: {{this.value}}%"></span></div> 
+		{{else}}
+			{{this.value}}
+		{{/if}}
+	</li>
+	{{/each}}
+</script>
+<script type="text/javascript" src="js/util.js"></script>
+<script type="text/javascript" src="js/measure-manager.js"></script>
+<script type="text/javascript" src="js/hint-manager.js"></script>
+<script type="text/javascript" src="js/models/reed.js"></script>
+<script type="text/javascript" src="js/models/tools.js"></script>
+<script type="text/javascript" src="js/models/materials.js"></script>
+<script type="text/javascript" src="js/models/actions.js"></script>
+<script type="text/javascript" src="js/models/scrape-mode.js"></script>
+<script type="text/javascript" src="js/state-manager.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
+
+
+</body>
+</html>
